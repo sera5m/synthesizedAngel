@@ -5,9 +5,10 @@
   - CMake ≥ 3.20
   - Compiler: GCC ≥ 12 / Clang ≥ 15 (C++20); newer for C++26
   - Threads (pthread) — used by the parallel batch queue
-- Toplethos: submodule at `toplethos_lang/`
+- Toplethos language: submodule at `toplethos_lang/`
+- Toplethos IDE: submodule at `toplethos_ide/` (graph window + VS Code extension)
   ```bash
-  git submodule update --init toplethos_lang
+  git submodule update --init toplethos_lang toplethos_ide
   ```
   Post-parallelism update (Halloween 2026 or later).
 
@@ -24,3 +25,10 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/pbatch_demo   # parallel square-map test
 ```
+
+## Graph IDE
+```bash
+cd toplethos_ide
+python3 toplethos_ide.py
+```
+VS Code extension install is in `toplethos_ide/vscode-toplethos/README.md`.

@@ -4,3 +4,6 @@
 [submodule "lean_lang/mathlib"]
 	path = lean_lang/mathlib
 	url = https://github.com/leanprover-community/mathlib4.git
+[submodule "toplethos_ide"]
+	path = toplethos_ide
+	url = https://github.com/sera5m/toplethos-ide.git
