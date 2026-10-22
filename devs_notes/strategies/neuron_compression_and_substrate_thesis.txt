@@ -1,0 +1,74 @@
+# Neuron Compression and Substrate Optimization Thesis
+
+**Project:** synthesizedAngel
+**Date:** 2026-10-22
+**Context:** Derived from architecture discussion on Eneurons, sector ownership, function extraction, and computer-substrate advantages over biological tissue.
+
+## Core Claim
+
+A massively reduced brain simulator is feasible on standard hardware (multi-core CPU + consumer GPU) by refusing to simulate the brain’s implementation and instead simulating only its observable results. Every biological operation for which a computer already has a better primitive is replaced by that primitive. What remains is a small residue of irregular, pointer-chasing, rapidly plastic structure owned by CPU cores.
+
+## Hardware Split (Source of Truth)
+
+- **CPU cores own sectors.** Each core holds the authoritative buffer for one or more sectors. Irregular work stays here: pointer chasing, link creation/destruction, “fire this ID and walk downstream,” vault neurons, concept tags, and reversible extraction logs.
+- **GPU is a bulk transformer only.** It never owns topology. It receives flat arrays of state or call descriptors and runs polymorphic kernels (“transform this set of variables”). Results and deltas are written back under a generation-counter guard.
+- Cross-sector traffic is explicit ports and messages, never silent shared mutation.
+
+Physical core ownership (core 0 = lobe/sector A, core 1 = sector B, …) plus shared-nothing messaging solves a large part of the real-time problem for the residue.
+
+## Expensive-in-Biology / Cheap-in-Program Operations
+
+These are deleted from the neural graph and replaced by computer primitives:
+
+1. **Arithmetic and comparison** — add, mul, magnitude-compare, threshold, max/min. One polymorphic kernel replaces billions of “adder” neurons.
+2. **Fixed or slowly changing transforms** — coordinate transforms, filter banks, stable gain fields, simple WTA. Closed form or LUT + delta notification.
+3. **Long-term storage** — write the record to SSD/memory-mapped file. Keep only an index and retrieval cue in the live graph.
+4. **Pure lookup / table-driven mappings** — explicit LUT or hash table. Invalidate only on actual change.
+5. **Simple global modulators** — scalar or small vector written into sector global state.
+6. **High-precision or exact operations** — native integer/float instructions.
+7. **Stereotyped sequences / oscillators** — small state machine or closed-form emitter.
+8. **Bulk identical updates** — one data-parallel GPU/SIMD launch.
+9. **Exact or near-exact indexing** — hash table or database query.
+
+The realized saving equals the fraction of per-second biological operations that fall into these classes, not raw neuron count. A 10 % structural reduction is a realistic early lower bound; effective real-time relief can be higher.
+
+## Neuron Compression Architecture
+
+Every Eneuron or sector carries:
+
+- a **pointer to a known function** (common case), or
+- a **custom function body** (created only when no match exists).
+
+Attributes ride with the pointer:
+
+- Same function, different attributes (add-f32 vs add-i32 vs add-ternary) share one `fn_ref`. The kernel is polymorphic.
+- **Automatic detection:** when a cluster shows a stable input→output relation, record the mapping, emit a function (LUT or closed form), replace the cluster with one call site, and keep a reversible log so the subgraph can be extracted back for local mutation.
+- **Memory packets:** cold state → compressed blob or storage pointer; hot state → inline vector; retrieval → index key. Long-term memory leaves the neural graph.
+- **Concept tags** (especially frontal): metadata only. Group or query by tag without caring about implementation. Sufficient to start; full memetics can follow.
+- **Firing meta and hooks:** optional bounded causal trace; sector-level event bus (“if event E, invoke these call sites”). Back-recursion is optional and walks explicit ports.
+
+## Topology and Parallelism (Desktop Backend)
+
+- `@topologize.<FlowShape>` (FanOut, Join, ParallelLinear, Map, Reduce, Chain, …) lowers to expanded desktop instructions that call forked BendRT components (task cube, flat evaluator, GPU dispatch).
+- CPU remains source of truth. FanOut writes task descriptors into the cube; Join is last-writer-runs-the-reducer under an atomic counter.
+- GPU wavefronts (e.g., RDNA 3 SIMD32) are fixed-function transformers, not general CPUs. They run the polymorphic kernels; they do not chase pointers or allocate.
+
+## What Remains (the Residue)
+
+Only structure that is still irregular, highly context-sensitive, rapidly rewiring, or not yet recognized as a function. This residue is expected to be 10×–100× smaller than a naive connectome once high-confidence reductions are applied.
+
+## Feasibility
+
+- Insect-scale brains (fruit fly ~100k–200k neurons) are already simulated near real-time on laptops with simpler models. The optimizations above make them comfortable and leave headroom.
+- On an 8-core + mid-range GPU desktop, hot sectors at interactive rates and larger reduced models at a usable fraction of real-time are plausible once the call-descriptor path, detection pass, and storage offload are implemented.
+- Full biological fidelity was never the goal. Observable results via better primitives is.
+
+## Next Concrete Steps
+
+1. Sector/port model + call-descriptor emission.
+2. Polymorphic kernel set (arithmetic, compare, common transforms).
+3. Detection heuristic + reversible extraction log.
+4. Storage-backed long-term memory with live index only.
+5. Measure collapsed traffic versus residue on a concrete sector inventory.
+
+This thesis is the working compression and substrate model for synthesizedAngel.
