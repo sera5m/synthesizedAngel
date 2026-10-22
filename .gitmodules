@@ -1,0 +1,3 @@
+[submodule "toplethos_lang"]
+	path = toplethos_lang
+	url = https://github.com/sera5m/toplethos-lang.git
