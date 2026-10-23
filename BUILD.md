@@ -5,12 +5,12 @@
   - CMake ≥ 3.20
   - Compiler: GCC ≥ 12 / Clang ≥ 15 (C++20); newer for C++26
   - Threads (pthread) — used by the parallel batch queue
-- Toplethos language: submodule at `toplethos_lang/`
+- Toplethos language: submodule at `toplethos_lang/`, tag `halloween`
 - Toplethos IDE: submodule at `toplethos_ide/` (graph window + VS Code extension)
   ```bash
   git submodule update --init toplethos_lang toplethos_ide
   ```
-  Post-parallelism update (Halloween 2026 or later).
+  Halloween is v1. A pin from before that tag is not the language. Arrays and the rest of the matrix are still unfinished; they are not a reason to keep an older pin.
 
 ## Optional
 - Lean 4 (specs only): `elan toolchain install stable`
