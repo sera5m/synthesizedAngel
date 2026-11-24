@@ -74,3 +74,5 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/pbatch_demo
 ```
+
+Note: repository is being renamed from synthesizedAngel to project rubicon -archi_prototype. Update the clone URL after the GitHub rename.
